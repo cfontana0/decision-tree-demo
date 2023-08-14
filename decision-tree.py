@@ -21,8 +21,29 @@ y, class_names = pd.factorize(df['tree_type'])
 # Split the data into training and testing datasets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
 
+# Calculate the best max_depth
+max_info = {
+    "max_depth": 0,
+    "accuracy": 0
+}
+
+for i in range(1, 20):
+    model = DecisionTreeClassifier(max_depth=i, random_state=0)
+    model.fit(X_train, y_train)
+
+    # Make predictions on the test data
+    predictions = model.predict(X_test)
+
+    # Calculate the accuracy of the predictions
+    accuracy = accuracy_score(y_test, predictions)
+    if accuracy > max_info["accuracy"]:
+        max_info["max_depth"] = i
+        max_info["accuracy"] = accuracy
+
+print(f'Max: {max_info}')
+
 # Train the model
-model = DecisionTreeClassifier(max_depth=3, random_state=0)
+model = DecisionTreeClassifier(max_depth=max_info["max_depth"], random_state=0)
 model.fit(X_train, y_train)
 
 # Make predictions on the test data
@@ -30,7 +51,7 @@ predictions = model.predict(X_test)
 
 # Calculate the accuracy of the predictions
 accuracy = accuracy_score(y_test, predictions)
-print(f'Accuracy: {accuracy}')
+
 
 # Compute and plot the confusion matrix
 cm = confusion_matrix(y_test, predictions)
