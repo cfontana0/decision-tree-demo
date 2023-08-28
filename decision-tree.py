@@ -26,6 +26,8 @@ for i in range(1, 20):
     predictions = model.predict(X_test)
     accuracy = accuracy_score(y_test, predictions)
 
+    print(f"Iteration {i}: Max Depth = {i}, Accuracy = {accuracy:.2f}")
+
     # Update max_info if current accuracy is better
     if accuracy > max_info["accuracy"]:
         max_info.update({"max_depth": i, "accuracy": accuracy})
@@ -34,6 +36,12 @@ for i in range(1, 20):
 
 print(
     f'Best max_depth: {max_info["max_depth"]}, Accuracy: {max_info["accuracy"]}')
+
+# Assign the best max depth
+model = DecisionTreeClassifier(max_depth=max_info["max_depth"], random_state=0)
+model.fit(X_train, y_train)
+predictions = model.predict(X_test)
+accuracy = accuracy_score(y_test, predictions)
 
 # Compute and plot the confusion matrix
 cm = confusion_matrix(y_test, predictions)
